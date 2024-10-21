@@ -189,6 +189,8 @@ export async function POST(req: Request) {
       const { id } = evt?.data;
       console.log("deleted", evt?.data);
 
+      console.log(id);
+
       // @ts-ignore
       await deleteCommunity(id);
 
