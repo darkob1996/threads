@@ -169,15 +169,12 @@ export async function addMemberToCommunity(
     // Find the community by its unique id
     const community = await Community.findOne({ id: communityId });
 
-    console.log(communityId, community);
-
     if (!community) {
       throw new Error("Community not found");
     }
 
     // Find the user by their unique id
     const user = await User.findOne({ id: memberId });
-    console.log(user, memberId);
 
     if (!user) {
       throw new Error("User not found");
@@ -192,11 +189,13 @@ export async function addMemberToCommunity(
     community.members.push(user._id);
     await community.save();
 
-    console.log(community);
-
     // Add the community's _id to the communities array in the user
-    user.communities.push(community._id);
-    await user.save();
+    if (user.communities.includes(community._id)) {
+      throw new Error("User already had that community!");
+    } else {
+      user.communities.push(community._id);
+      await user.save();
+    }
 
     return community;
   } catch (error) {
