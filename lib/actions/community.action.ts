@@ -169,12 +169,15 @@ export async function addMemberToCommunity(
     // Find the community by its unique id
     const community = await Community.findOne({ id: communityId });
 
+    console.log(communityId, community);
+
     if (!community) {
       throw new Error("Community not found");
     }
 
     // Find the user by their unique id
     const user = await User.findOne({ id: memberId });
+    console.log(user, memberId);
 
     if (!user) {
       throw new Error("User not found");
@@ -188,6 +191,8 @@ export async function addMemberToCommunity(
     // Add the user's _id to the members array in the community
     community.members.push(user._id);
     await community.save();
+
+    console.log(community);
 
     // Add the community's _id to the communities array in the user
     user.communities.push(community._id);
@@ -283,17 +288,25 @@ export async function deleteCommunity(communityId: string) {
       { new: true }
     );
 
+    console.log(deletedCommunity);
     if (!deletedCommunity) {
       throw new Error("Community not found");
     }
 
     // Delete all threads associated with the community
+    console.log("Deleting threads associated with that community");
     await Thread.deleteMany({ community: communityId });
+    console.log("Deleted threads associated with that community");
 
     // Find all users who are part of the community
+    console.log("Finding all users associated with that community");
     const communityUsers = await User.find({
       communities: deletedCommunity._id,
     });
+    console.log(
+      "Found all users associated with that community",
+      communityUsers
+    );
 
     // Remove the community from the 'communities' array for each user
     const updateUserPromises = communityUsers.map((user) => {
