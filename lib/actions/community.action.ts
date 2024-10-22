@@ -308,6 +308,7 @@ export async function deleteCommunity(communityId: string) {
 
     // Delete all threads on the single user that are associated with the deleted community
     communityToDelete.threads.forEach((thread: any) => {
+      console.log(thread);
       // thread._id je id koji se trazi u user dokumentu
       communityUsers.forEach((user) => {
         user.threads.pull(thread._id);
