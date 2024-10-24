@@ -298,6 +298,8 @@ export async function deleteCommunity(communityId: string) {
       communities: communityToDelete._id,
     });
 
+    console.log(communityUsers);
+
     // Remove the community from the 'communities' array for each user
     const updateUserPromises = communityUsers.map((user) => {
       user.communities.pull(communityToDelete._id);
@@ -308,9 +310,9 @@ export async function deleteCommunity(communityId: string) {
 
     // Delete all threads on the single user that are associated with the deleted community
     communityToDelete.threads.forEach((thread: any) => {
-      console.log(thread);
       // thread._id je id koji se trazi u user dokumentu
       communityUsers.forEach((user) => {
+        console.log(user.threads, thread._id);
         user.threads.pull(thread._id);
         return user.save();
       });
